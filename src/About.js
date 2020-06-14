@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, Container, Card, ListGroup, ListGroupItem } from 'react-bootstrap'
+import { Image, Container, Card } from 'react-bootstrap'
 
 export default function About() {
 	return (
@@ -16,7 +16,7 @@ export default function About() {
 						<h2><strong>Zun Zhou</strong></h2>
 						<h4 className='text-muted'>Full Stack Developer</h4>
 						<p style={{ textAlign: 'left', fontSize: '20px' }}>
-							Hi, my name is Zun (Leslie) Zhou. I'm an 4th-year computer science undergraduate student at San Francisco State University.
+							Hi, my name is Zun (Leslie) Zhou. I'm a 4th-year computer science undergraduate student at San Francisco State University.
 							I made the website to provide the latest data on the COVID-19 coronavirus for the general public.
                             <br /><br />
                             In this moment of the pandemic, as we're opening the country back up, it is important to look at the data and approach reopening

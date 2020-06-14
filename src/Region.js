@@ -31,7 +31,7 @@ const Region = ({ region, dispatch }) => {
 						setloading(false)
 					}).catch(err => console.log(err))
 			}).catch(e => console.log(e))
-	}, [])
+	}, [region])
 
 	if (region === '') {
 		return <Redirect to='/' />
@@ -43,7 +43,7 @@ const Region = ({ region, dispatch }) => {
 				<Card>
 					<Card.Body>
 						<Card.Title><h2>{all.continent} COVIS-19 Stats</h2>{loading && <Spinner animation="border" />}</Card.Title>
-						<Table striped>
+						<Table responsive striped>
 							<thead>
 								<tr>
 									<td>NAME</td>

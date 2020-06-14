@@ -50,7 +50,7 @@ const Home = ({ dispatch }) => {
 		<div>
 			<Container fluid>
 				<Row>
-					<Col md='5'>
+					<Col lg='5'>
 						<Card>
 							<Card.Body>
 								<Card.Title><h2>Summary</h2></Card.Title>
@@ -68,7 +68,7 @@ const Home = ({ dispatch }) => {
 						<Card>
 							<Card.Body>
 								<Card.Title><h2>Region COVID-19 Stats</h2></Card.Title>
-								<Table size='sm' striped style={{ textAlign: 'left' }}>
+								<Table responsive size='sm' striped style={{ textAlign: 'left' }}>
 									<thead>
 										<tr>
 											<td>REGION</td>
@@ -97,7 +97,7 @@ const Home = ({ dispatch }) => {
 						<Card>
 							<Card.Body>
 								<Card.Title><h2>USA COVID-19 Stats</h2></Card.Title>
-								<Table size='sm' striped style={{ textAlign: 'left' }}>
+								<Table responsive size='sm' striped style={{ textAlign: 'left' }}>
 									<thead>
 										<tr>
 											<td>STATE</td>
@@ -124,7 +124,7 @@ const Home = ({ dispatch }) => {
 							</Card.Body>
 						</Card><br />
 					</Col>
-					<Col md='7'>
+					<Col lg='7'>
 						<Card>
 							<Card.Body>
 								<Card.Title><h2>World COVID-19 Stats</h2>{loading && <Spinner animation='border' />}</Card.Title>
