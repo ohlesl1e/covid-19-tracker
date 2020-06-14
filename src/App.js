@@ -6,6 +6,7 @@ import Home from './Home';
 import Map from './Map';
 import About from './About';
 import Country from './Country';
+import Region from './Region';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path='/map' component={Map} />
         <Route path='/about' component={About} />
         <Route path='/country' component={Country} />
+        <Route path='/region' component={Region} />
       </Switch>
     </div>
   );

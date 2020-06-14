@@ -48,3 +48,15 @@
 .recovered {
   color: DodgerBlue
 }
+
+.critical {
+  color: orange;
+}
+
+.test {
+  color: SlateBlue
+}
+
+.active {
+  color: deeppink;
+}

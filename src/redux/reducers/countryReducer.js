@@ -1,5 +1,6 @@
 const initialState = {
-    countryCode: ''
+    countryCode: '',
+    region: ''
 }
 
 export default (state = initialState, action) => {
@@ -9,6 +10,11 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 countryCode: action.countryCode
+            }
+        case 'COUNTRY_SET_REGION':
+            return {
+                ...state,
+                region: action.region
             }
 
         default:

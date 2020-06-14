@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux';
 import axios from 'axios'
-import { Container, Row, Col, Card, ListGroup, ListGroupItem, Table } from 'react-bootstrap'
-import { setCountryCode } from './redux/actions/countryAction';
+import { Container, Row, Col, Card, ListGroup, ListGroupItem, Table, Spinner } from 'react-bootstrap'
+import { setCountryCode, setRegion } from './redux/actions/countryAction';
 import { Link } from 'react-router-dom';
 
 const Home = ({ dispatch }) => {
@@ -11,30 +11,46 @@ const Home = ({ dispatch }) => {
 	const [totalRecovered, settotalRecovered] = useState('')
 	const [newConfirmed, setnewConfirmed] = useState('')
 	const [newDeaths, setnewDeaths] = useState('')
-	const [newRecovered, setnewRecovered] = useState('')
 	const [countries, setcountries] = useState([])
 	const [date, setdate] = useState('')
+	const [region, setregion] = useState([])
+	const [usa, setusa] = useState([])
+	const [loading, setloading] = useState(true)
 	useEffect(() => {
-		axios.get('https://api.covid19api.com/summary')
+		axios.get('https://corona.lmao.ninja/v2/all?yesterday')
 			.then(res => {
-				settotalConfirmed(res.data.Global.TotalConfirmed.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'))
-				setnewConfirmed(res.data.Global.NewConfirmed.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'))
-				settotalDeaths(res.data.Global.TotalDeaths.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'))
-				setnewDeaths(res.data.Global.NewDeaths.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'))
-				settotalRecovered(res.data.Global.TotalRecovered.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'))
-				setnewRecovered(res.data.Global.NewRecovered.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'))
-				const fetchedCountries = res.data.Countries.sort((a, b) => b.TotalConfirmed - a.TotalConfirmed)
-				setcountries(fetchedCountries)
-				const updateDate = new Date(res.data.Date)
-				setdate(`${updateDate.getMonth()}/${updateDate.getDate()}/${updateDate.getFullYear()} ${updateDate.getHours()}:${updateDate.getMinutes()}:${updateDate.getSeconds()}`)
+				settotalConfirmed(res.data.cases.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'))
+				setnewConfirmed(res.data.todayCases.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'))
+				settotalDeaths(res.data.deaths.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'))
+				setnewDeaths(res.data.todayDeaths.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'))
+				settotalRecovered(res.data.recovered.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,'))
+				const updateDate = new Date(res.data.updated)
+				setdate(`${updateDate.getMonth() + 1}/${updateDate.getDate()}/${updateDate.getFullYear()} ${updateDate.getHours()}:${updateDate.getMinutes()}:${updateDate.getSeconds()}`)
 			}).catch(e => console.log(e))
 
+		axios.get('https://corona.lmao.ninja/v2/countries?yesterday&sort')
+			.then(res => {
+				const fetchCountries = res.data
+				fetchCountries.sort((a, b) => b.cases - a.cases)
+				setcountries(fetchCountries)
+				setloading(false)
+			}).catch(e => console.log(e))
+
+		axios.get('https://corona.lmao.ninja/v2/continents?yesterday=true&sort')
+			.then(res => {
+				setregion(res.data)
+			}).catch(e => console.log(e))
+
+		axios.get('https://corona.lmao.ninja/v2/states?sort&yesterday')
+			.then(res => {
+				setusa(res.data)
+			}).catch(e => console.log(e))
 	}, [])
 	return (
 		<div>
 			<Container fluid>
 				<Row>
-					<Col md='4'>
+					<Col md='5'>
 						<Card>
 							<Card.Body>
 								<Card.Title><h2>Summary</h2></Card.Title>
@@ -46,15 +62,73 @@ const Home = ({ dispatch }) => {
 								<ListGroupItem>Total recovered: <h4 className='recovered'>{totalRecovered}</h4></ListGroupItem>
 								<ListGroupItem>New confirmed: <h4 className='confirmed'>{newConfirmed}</h4></ListGroupItem>
 								<ListGroupItem>New deaths: <h4 className='deaths'>{newDeaths}</h4></ListGroupItem>
-								<ListGroupItem>New recovered: <h4 className='recovered'>{newRecovered}</h4></ListGroupItem>
 							</ListGroup>
 						</Card>
-					</Col>
-					<Col md='8'>
+						<br />
 						<Card>
 							<Card.Body>
-								<Card.Title><h2>World COVID-19 Stats</h2></Card.Title>
-								<Table responsive size='sm' style={{ textAlign: 'left' }}>
+								<Card.Title><h2>Region COVID-19 Stats</h2></Card.Title>
+								<Table size='sm' striped style={{ textAlign: 'left' }}>
+									<thead>
+										<tr>
+											<td>REGION</td>
+											<td>CONFIRMED</td>
+											<td>DEATHS</td>
+											<td>RECOVERED</td>
+										</tr>
+									</thead>
+									<tbody>
+										{region.map((value, i) =>
+											<tr key={i}>
+												<td>
+													<Link to='/region' onClick={() => dispatch(setRegion(value.continent.substr(0, 4)))}>
+														{value.continent}
+													</Link>
+												</td>
+												<td className='confirmed'>{value.cases.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
+												<td className='deaths'>{value.deaths.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
+												<td className='recovered'>{value.recovered.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
+											</tr>
+										)}
+									</tbody>
+								</Table>
+							</Card.Body>
+						</Card><br />
+						<Card>
+							<Card.Body>
+								<Card.Title><h2>USA COVID-19 Stats</h2></Card.Title>
+								<Table size='sm' striped style={{ textAlign: 'left' }}>
+									<thead>
+										<tr>
+											<td>STATE</td>
+											<td>CONFIRMED</td>
+											<td>CHANGES</td>
+											<td>DEATHS</td>
+											<td>ACTIVE</td>
+											<td>TESTS</td>
+										</tr>
+									</thead>
+									<tbody>
+										{usa.map((value, i) =>
+											<tr key={i}>
+												<td>{value.state}</td>
+												<td className='confirmed'>{value.cases.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
+												<td className='confirmed'>{value.todayCases.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
+												<td className='deaths'>{value.deaths.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
+												<td className='active'>{value.active.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
+												<td className='test'>{value.tests.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
+											</tr>
+										)}
+									</tbody>
+								</Table>
+							</Card.Body>
+						</Card><br />
+					</Col>
+					<Col md='7'>
+						<Card>
+							<Card.Body>
+								<Card.Title><h2>World COVID-19 Stats</h2>{loading && <Spinner animation='border' />}</Card.Title>
+								<Table responsive striped size='sm' style={{ textAlign: 'left' }}>
 									<thead>
 										<tr>
 											<th>NAME</th>
@@ -63,28 +137,29 @@ const Home = ({ dispatch }) => {
 											<th>DEATHS</th>
 											<th>CHANGES</th>
 											<th>RECOVERED</th>
-											<th>CHANGES</th>
 										</tr>
 									</thead>
 									<tbody style={{ overflowy: 'scroll' }}>
 										<tr>
-											<td>TOTAL</td>
+											<td>{!loading && 'TOTAL'}</td>
 											<td className='confirmed'>{totalConfirmed}</td>
 											<td className='confirmed'>{newConfirmed}</td>
 											<td className='deaths'>{totalDeaths}</td>
 											<td className='deaths'>{newDeaths}</td>
 											<td className='recovered'>{totalRecovered}</td>
-											<td className='recovered'>{newRecovered}</td>
 										</tr>
 										{countries.map((value, i) =>
 											<tr key={i}>
-												<td><Link to='/country' onClick={() => dispatch(setCountryCode(value.CountryCode))}>{value.Country}</Link></td>
-												<td className='confirmed'>{value.TotalConfirmed.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
-												<td className='confirmed'>{value.NewConfirmed.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
-												<td className='deaths'>{value.TotalDeaths.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
-												<td className='deaths'>{value.NewDeaths.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
-												<td className='recovered'>{value.TotalRecovered.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
-												<td className='recovered'>{value.NewRecovered.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
+												<td><Link to='/country' onClick={() => dispatch(setCountryCode(value.country))}>{value.country}</Link></td>
+												<td className='confirmed'>{value.cases.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
+												<td className='confirmed'>{value.todayCases.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
+												<td className='deaths'>{value.deaths.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
+												<td className='deaths'>{value.todayDeaths.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
+												<td className='recovered'>
+													{value.recovered === 0 ?
+														'Unknown' :
+														value.recovered.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}
+												</td>
 											</tr>
 										)}
 									</tbody>
