@@ -12,12 +12,12 @@ import { Provider } from 'react-redux';
 const store = createStore(rootReducer)
 
 ReactDOM.render(
-  <Provider store={store}>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </Provider>,
-  document.getElementById('root')
+	<Provider store={store}>
+		<BrowserRouter>
+			<App />
+		</BrowserRouter>
+	</Provider>,
+	document.getElementById('root')
 );
 
 // If you want your app to work offline and load faster, you can change

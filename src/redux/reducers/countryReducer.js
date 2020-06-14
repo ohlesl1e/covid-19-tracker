@@ -1,23 +1,23 @@
 const initialState = {
-    countryCode: '',
-    region: ''
+	countryCode: '',
+	region: ''
 }
 
 export default (state = initialState, action) => {
-    switch (action.type) {
+	switch (action.type) {
 
-        case 'COUNTRY_SET_COUNTRY_CODE':
-            return {
-                ...state,
-                countryCode: action.countryCode
-            }
-        case 'COUNTRY_SET_REGION':
-            return {
-                ...state,
-                region: action.region
-            }
+		case 'COUNTRY_SET_COUNTRY_CODE':
+			return {
+				...state,
+				countryCode: action.countryCode
+			}
+		case 'COUNTRY_SET_REGION':
+			return {
+				...state,
+				region: action.region
+			}
 
-        default:
-            return state
-    }
+		default:
+			return state
+	}
 }
