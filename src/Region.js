@@ -11,6 +11,7 @@ const Region = ({ region, dispatch }) => {
 	const [countries, setcountries] = useState([])
 	const [loading, setloading] = useState(true)
 	useEffect(() => {
+		window.scrollTo(0,0)
 		axios.get(`https://corona.lmao.ninja/v2/continents/${region}?yesterday&strict=false`)
 			.then(res => {
 				const alldata = res.data

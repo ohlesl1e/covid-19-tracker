@@ -16,6 +16,7 @@ const Country = ({ countryCode }) => {
 	const [oneWeek, setoneWeek] = useState([])
 
 	useEffect(() => {
+		window.scrollTo(0, 0)
 		axios.get(`https://corona.lmao.ninja/v2/historical/${countryCode}?lastdays=all`)
 			.then(res => {
 				const fetchData = res.data.timeline
@@ -32,38 +33,22 @@ const Country = ({ countryCode }) => {
 				setdata(newdata)
 			}).catch(e => console.log(e))
 
-		axios.get(`https://corona.lmao.ninja/v2/historical/${countryCode}?lastdays=14`)
+		axios.get(`https://corona.lmao.ninja/v2/historical/${countryCode}?lastdays=15`)
 			.then(res => {
 				console.log(res.data)
 				const fetchData = res.data.timeline
 				const timeline = Object.keys(fetchData.cases)
 				const newdata = []
-				for (const date of timeline) {
+				for (let i = 1; i < timeline.length; i++) {
 					newdata.push({
-						date: date,
-						confirmed: fetchData.cases[date],
-						deaths: fetchData.deaths[date],
-						recovered: fetchData.recovered[date]
+						date: timeline[i],
+						confirmed: fetchData.cases[timeline[i]] - fetchData.cases[timeline[i - 1]],
+						deaths: fetchData.deaths[timeline[i]] - fetchData.deaths[timeline[i - 1]],
+						recovered: fetchData.recovered[timeline[i]] - fetchData.recovered[timeline[i - 1]]
 					})
 				}
 				settwoWeeks(newdata)
-			}).catch(e => console.log(e))
-
-		axios.get(`https://corona.lmao.ninja/v2/historical/${countryCode}?lastdays=7`)
-			.then(res => {
-				console.log(res.data)
-				const fetchData = res.data.timeline
-				const timeline = Object.keys(fetchData.cases)
-				const newdata = []
-				for (const date of timeline) {
-					newdata.push({
-						date: date,
-						confirmed: fetchData.cases[date],
-						deaths: fetchData.deaths[date],
-						recovered: fetchData.recovered[date]
-					})
-				}
-				setoneWeek(newdata)
+				setoneWeek(newdata.slice(7))
 			}).catch(e => console.log(e))
 
 		axios.get(`https://corona.lmao.ninja/v2/countries/${countryCode}?yesterday=true&strict=true&query `)
@@ -182,7 +167,7 @@ const Country = ({ countryCode }) => {
 					</Col>
 				</Row>
 				<br />
-				<h3>Ratios</h3>
+				<h2>Ratios</h2>
 				<Row>
 					<Col md='4'>
 						<Pie
@@ -227,6 +212,7 @@ const Country = ({ countryCode }) => {
 						/>
 					</Col>
 				</Row>
+				<h2>Recent Changes</h2>
 				<Row>
 					<Col md='6'>
 						<h3>Last 14 days</h3>

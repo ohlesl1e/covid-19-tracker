@@ -50,7 +50,7 @@ const Home = ({ dispatch }) => {
 		<div>
 			<Container fluid>
 				<Row>
-					<Col lg='5'>
+					<Col lg='6'>
 						<Card>
 							<Card.Body>
 								<Card.Title><h2>Summary</h2></Card.Title>
@@ -73,7 +73,9 @@ const Home = ({ dispatch }) => {
 										<tr>
 											<td>REGION</td>
 											<td>CONFIRMED</td>
+											<td>CHANGES</td>
 											<td>DEATHS</td>
+											<td>CHANGES</td>
 											<td>RECOVERED</td>
 										</tr>
 									</thead>
@@ -86,7 +88,9 @@ const Home = ({ dispatch }) => {
 													</Link>
 												</td>
 												<td className='confirmed'>{value.cases.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
+												<td className='confirmed'>{value.todayCases.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
 												<td className='deaths'>{value.deaths.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
+												<td className='deaths'>{value.todayDeaths.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
 												<td className='recovered'>{value.recovered.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
 											</tr>
 										)}
@@ -104,6 +108,7 @@ const Home = ({ dispatch }) => {
 											<td>CONFIRMED</td>
 											<td>CHANGES</td>
 											<td>DEATHS</td>
+											<td>CHANGES</td>
 											<td>ACTIVE</td>
 											<td>TESTS</td>
 										</tr>
@@ -115,6 +120,7 @@ const Home = ({ dispatch }) => {
 												<td className='confirmed'>{value.cases.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
 												<td className='confirmed'>{value.todayCases.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
 												<td className='deaths'>{value.deaths.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
+												<td className='deaths'>{value.todayDeaths.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
 												<td className='active'>{value.active.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
 												<td className='test'>{value.tests.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</td>
 											</tr>
@@ -124,7 +130,7 @@ const Home = ({ dispatch }) => {
 							</Card.Body>
 						</Card><br />
 					</Col>
-					<Col lg='7'>
+					<Col lg='6'>
 						<Card>
 							<Card.Body>
 								<Card.Title><h2>World COVID-19 Stats</h2>{loading && <Spinner animation='border' />}</Card.Title>
@@ -140,14 +146,17 @@ const Home = ({ dispatch }) => {
 										</tr>
 									</thead>
 									<tbody style={{ overflowy: 'scroll' }}>
-										<tr>
-											<td>{!loading && 'TOTAL'}</td>
-											<td className='confirmed'>{totalConfirmed}</td>
-											<td className='confirmed'>{newConfirmed}</td>
-											<td className='deaths'>{totalDeaths}</td>
-											<td className='deaths'>{newDeaths}</td>
-											<td className='recovered'>{totalRecovered}</td>
-										</tr>
+										{!loading &&
+											<tr>
+												<td>TOTAL</td>
+												<td className='confirmed'>{totalConfirmed}</td>
+												<td className='confirmed'>{newConfirmed}</td>
+												<td className='deaths'>{totalDeaths}</td>
+												<td className='deaths'>{newDeaths}</td>
+												<td className='recovered'>{totalRecovered}</td>
+
+											</tr>
+										}
 										{countries.map((value, i) =>
 											<tr key={i}>
 												<td><Link to='/country' onClick={() => dispatch(setCountryCode(value.country))}>{value.country}</Link></td>
