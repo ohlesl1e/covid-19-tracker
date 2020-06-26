@@ -3,12 +3,13 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { Redirect } from 'react-router-dom'
 import { Container, Row, Col, Card, ListGroup, ListGroupItem } from 'react-bootstrap'
-import { AreaChart, CartesianGrid, XAxis, YAxis, Legend, Tooltip, ResponsiveContainer, Area, BarChart, Bar } from 'recharts'
+import { AreaChart, CartesianGrid, XAxis, YAxis, Legend, Tooltip, ResponsiveContainer, Area, BarChart, Bar, LineChart, Line } from 'recharts'
 import { Pie } from 'react-chartjs-2'
 
 const Country = ({ countryCode }) => {
 	const [country, setcountry] = useState('')
 	const [data, setdata] = useState([])
+	const [changes, setchanges] = useState([])
 	const [conRec, setconRec] = useState({})
 	const [conDeath, setconDeath] = useState({})
 	const [recDeath, setrecDeath] = useState({})
@@ -22,6 +23,7 @@ const Country = ({ countryCode }) => {
 				const fetchData = res.data.timeline
 				const timeline = Object.keys(fetchData.cases)
 				const newdata = []
+				const changesData = []
 				for (const date of timeline) {
 					newdata.push({
 						date: date,
@@ -30,6 +32,15 @@ const Country = ({ countryCode }) => {
 						recovered: fetchData.recovered[date]
 					})
 				}
+				for (let i = 1; i < timeline.length; i++) {
+					changesData.push({
+						date: timeline[i],
+						'new confirmed': Math.abs(fetchData.cases[timeline[i]] - fetchData.cases[timeline[i - 1]]),
+						'new deaths': Math.abs(fetchData.deaths[timeline[i]] - fetchData.deaths[timeline[i - 1]]),
+						'new recovered': Math.abs(fetchData.recovered[timeline[i]] - fetchData.recovered[timeline[i - 1]]),
+					})
+				}
+				setchanges(changesData)
 				setdata(newdata)
 			}).catch(e => console.log(e))
 
@@ -165,6 +176,22 @@ const Country = ({ countryCode }) => {
 							</ListGroup>
 						</Card>
 					</Col>
+				</Row>
+				<br />
+				<h2>Daily Changes</h2>
+				<Row>
+					<ResponsiveContainer width='100%' height={720}>
+						<LineChart data={changes} margin={{ top: 5, right: 30, left: 20, bottom: 5, }}>
+							<CartesianGrid strokeDasharray='5 5' />
+							<XAxis dataKey='date' />
+							<YAxis />
+							<Tooltip />
+							<Legend />
+							<Line type='monotone' dataKey='new confirmed' stroke='#3CB371' />
+							<Line type='monotone' dataKey='new deaths' stroke='#FF6347' />
+							<Line type='monotone' dataKey='new recovered' stroke='#1E90FF' />
+						</LineChart>
+					</ResponsiveContainer>
 				</Row>
 				<br />
 				<h2>Ratios</h2>
