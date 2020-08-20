@@ -1,3 +1,5 @@
+# This project is deployed on (https://ncovid19tracker.live/)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
